@@ -4,7 +4,7 @@ import com.ecommerce.project.model.Category;
 
 import java.util.List;
 
-public interface CategoryService {
+public interface CategoryService  {
     Category  getCategory(Long categoryId);
     List<Category> getCategories();
     void createCategory(Category category);

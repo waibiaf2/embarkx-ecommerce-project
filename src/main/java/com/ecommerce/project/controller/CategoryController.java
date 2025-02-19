@@ -17,17 +17,17 @@ public class CategoryController {
     /***************************************
      * Constructor Injection
      *****************************************/
-    /*private final CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-    }*/
+    }
 
     /****************************************************
      * Field Injection
      * **************************************************/
-    @Autowired
-    private CategoryService categoryService;
+    /*@Autowired
+    private CategoryService categoryService;*/
 
     @GetMapping("/public/categories")
     public ResponseEntity<List<Category>> getCategories() {
@@ -40,7 +40,11 @@ public class CategoryController {
     @RequestMapping(value = "/public/categories/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
         Category category = categoryService.getCategory(categoryId);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(category, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+        }
     }
 
     @PostMapping("/admin/categories")
@@ -60,7 +64,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/admin/categories/{categoryId}")
+    @PatchMapping("/admin/categories/{categoryId}")
     public ResponseEntity<?> updateCategory(
         @PathVariable Long categoryId,
         @RequestBody Category category
