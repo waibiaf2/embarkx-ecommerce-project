@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -18,7 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream()
             .filter(c -> c.getCategoryId().equals(categoryId))
             .findFirst()
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categories.stream()
             .filter(c -> c.getCategoryId().equals(categoryId))
             .findFirst()
-            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
 
         categories.remove(category);
 
@@ -46,9 +47,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public String updateCategory(Long categoryId, Category category) {
+    public Category updateCategory(Long categoryId, Category category) {
+        Optional<Category> optionalCategory
+            = categories.stream()
+            .filter(c -> c.getCategoryId().equals(categoryId))
+            .findFirst();
+
+        if (optionalCategory.isPresent()) {
+            Category existingCategory = optionalCategory.get();
+            existingCategory.setCategoryName(category.getCategoryName());
+            return existingCategory;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found");
+        }
+
+        /*
         Category categoryToUpdate = getCategory(categoryId);
         categoryToUpdate.setCategoryName(category.getCategoryName());
         return "Category with categoryId " + categoryId + " updated successfully";
+        */
     }
 }

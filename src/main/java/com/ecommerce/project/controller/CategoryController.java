@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -35,6 +36,13 @@ public class CategoryController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    //@GetMapping("/public/categories/{categoryId}")
+    @RequestMapping(value = "/public/categories/{categoryId}", method = RequestMethod.GET)
+    public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
+        Category category = categoryService.getCategory(categoryId);
+        return new ResponseEntity<>(category, HttpStatus.OK);
+    }
+
     @PostMapping("/admin/categories")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
         categoryService.createCategory(category);
@@ -53,15 +61,15 @@ public class CategoryController {
     }
 
     @PutMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(
+    public ResponseEntity<?> updateCategory(
         @PathVariable Long categoryId,
         @RequestBody Category category
     ) {
-        String status = categoryService.updateCategory(categoryId, category);
+        Category updatedCategory = categoryService.updateCategory(categoryId, category);
         try {
-            return new ResponseEntity<>(status, HttpStatus.OK);
+            return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
         } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
         }
     }
 }
