@@ -3,6 +3,7 @@ package com.ecommerce.project.service;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl  implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -42,7 +43,6 @@ public class CategoryServiceImpl  implements CategoryService {
     }
 
 
-
     @Override
     public String deleteCategory(Long categoryId) {
         List<Category> categories = categoryRepository.findAll();
@@ -59,24 +59,11 @@ public class CategoryServiceImpl  implements CategoryService {
 
     @Override
     public Category updateCategory(Long categoryId, Category category) {
-        List<Category> categories = categoryRepository.findAll();
-        Optional<Category> optionalCategory
-            = categories.stream()
-            .filter(c -> c.getCategoryId().equals(categoryId))
-            .findFirst();
+        Category categoryToUpdate = categoryRepository.findById(categoryId).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found")
+        );
 
-        if (optionalCategory.isPresent()) {
-            Category existingCategory = optionalCategory.get();
-            existingCategory.setCategoryName(category.getCategoryName());
-            return categoryRepository.save(existingCategory);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found");
-        }
-
-        /*
-        Category categoryToUpdate = getCategory(categoryId);
-        categoryToUpdate.setCategoryName(category.getCategoryName());
-        return "Category with categoryId " + categoryId + " updated successfully";
-        */
+        category.setCategoryName(categoryToUpdate.getCategoryName());
+        return categoryRepository.save(category);
     }
 }
