@@ -1,6 +1,5 @@
 package com.ecommerce.project.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
