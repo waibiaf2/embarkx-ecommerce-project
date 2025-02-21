@@ -1,10 +1,9 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,14 +21,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
     
     @Override
-    public Category getCategory(Long categoryId) {
+    public Category getCategory(Long id) {
         Category category
-            = categoryRepository.findById(categoryId)
-                  .orElseThrow(
-                      () -> new ResponseStatusException(
-                          HttpStatus.NOT_FOUND, "Category resource " + categoryId + " Not Found"
-                      )
-                  );
+            = categoryRepository.findById(id)
+                  .orElseThrow(() ->  new ResourceNotFoundException("Category", "id", id));
         
         return category;
     }
@@ -40,20 +35,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
     
     @Override
-    public String deleteCategory(Long categoryId) {
-        Category categoryToDelete = getCategory(categoryId);
+    public String deleteCategory(Long id) {
+        Category categoryToDelete
+            = categoryRepository.findById(id)
+                  .orElseThrow(() ->  new ResourceNotFoundException("Category", "categoryId", id));
         categoryRepository.delete(categoryToDelete);
         
-        return "Category with categoryId " + categoryId + " deleted successfully";
+        return "Category with categoryId " + id + " deleted successfully";
     }
     
     @Override
-    public Category updateCategory(Long categoryId, Category category) {
-        Category categoryToUpdate = categoryRepository.findById(categoryId).orElseThrow(
-            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found")
-        );
+    public Category updateCategory(Long id, Category category) {
+        Category categoryToUpdate
+            = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", id));
         
-        categoryToUpdate.setCategoryName(category.getCategoryName());
+        categoryToUpdate.setName(category.getName());
         categoryRepository.save(categoryToUpdate);
         
         return categoryToUpdate;

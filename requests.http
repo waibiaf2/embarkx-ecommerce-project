@@ -10,7 +10,7 @@ POST {{host}}/admin/categories
 Content-Type: application/json
 
 {
-  "categoryName": "Banking, Finance and Investment"
+  "name": "Entertainment"
 }
 
 ### Update A Category
