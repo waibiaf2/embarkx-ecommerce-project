@@ -1,43 +1,31 @@
 package com.ecommerce.project.controller;
 
-import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
-    /***************************************
-     * Constructor Injection
-     *****************************************/
+   
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-
-    /****************************************************
-     * Field Injection
-     * **************************************************/
-    /*@Autowired
-    private CategoryService categoryService;*/
-
+    
     @GetMapping("/public/categories")
     public ResponseEntity<List<Category>> getCategories() {
         List<Category> categories = categoryService.getCategories();
-        //return ResponseEntity.status(HttpStatus.OK).body(categories);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    //@GetMapping("/public/categories/{categoryId}")
-    @RequestMapping(value = "/public/categories/{categoryId}", method = RequestMethod.GET)
+    @GetMapping("/public/categories/{categoryId}")
     public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
         Category category = categoryService.getCategory(categoryId);
         return new ResponseEntity<>(category, HttpStatus.OK);
@@ -61,10 +49,6 @@ public class CategoryController {
         @Valid @RequestBody Category category
     ) {
         Category updatedCategory = categoryService.updateCategory(categoryId, category);
-        try {
-            return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            throw new ResourceNotFoundException("Category", "categoryId", categoryId);
-        }
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 }
