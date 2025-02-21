@@ -2,10 +2,10 @@
 GET {{host}}/public/categories
 
 ### Get A Category
-@categoryId2 = 2
+@categoryId2 = 4
 GET {{host}}/public/categories/{{categoryId2}}
 
-### Post A Category
+### Add A Category
 POST {{host}}/admin/categories
 Content-Type: application/json
 
@@ -14,12 +14,12 @@ Content-Type: application/json
 }
 
 ### Update A Category
-@categoryId = 2
+@categoryId = 4
 PUT {{host}}/admin/categories/{{categoryId}}
 Content-Type: application/json
 
 {
-  "categoryName": "Finance, Banking and Investment"
+  "categoryName": "Leisure and Hospitality"
 }
 
 ### Delete A Category
