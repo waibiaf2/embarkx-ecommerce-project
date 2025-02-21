@@ -1,0 +1,28 @@
+### Get All Categories
+GET {{host}}/public/categories
+
+### Get A Category
+@categoryId2 = 2
+GET {{host}}/public/categories/{{categoryId2}}
+
+### Post A Category
+POST {{host}}/admin/categories
+Content-Type: application/json
+
+{
+  "categoryName": "Banking, Finance and Investment"
+}
+
+### Update A Category
+@categoryId = 2
+PUT {{host}}/admin/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "categoryName": "Finance, Banking and Investment"
+}
+
+### Delete A Category
+@categoryId3 = 4
+DELETE {{host}}/admin/categories/{{categoryId3}}
+
