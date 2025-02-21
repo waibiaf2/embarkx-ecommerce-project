@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
 import org.springframework.http.HttpStatus;
@@ -25,11 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategory(Long categoryId) {
         Category category
             = categoryRepository.findById(categoryId)
-                  .orElseThrow(
-                      () -> new ResponseStatusException(
-                          HttpStatus.NOT_FOUND, "Category resource " + categoryId + " Not Found"
-                      )
-                  );
+                  .orElseThrow(() ->  new ResourceNotFoundException("Category", "categoryId", categoryId));
         
         return category;
     }
@@ -41,7 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public String deleteCategory(Long categoryId) {
-        Category categoryToDelete = getCategory(categoryId);
+        Category categoryToDelete
+            = categoryRepository.findById(categoryId)
+                  .orElseThrow(() ->  new ResourceNotFoundException("Category", "categoryId", categoryId));
         categoryRepository.delete(categoryToDelete);
         
         return "Category with categoryId " + categoryId + " deleted successfully";
@@ -49,9 +48,9 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public Category updateCategory(Long categoryId, Category category) {
-        Category categoryToUpdate = categoryRepository.findById(categoryId).orElseThrow(
-            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found")
-        );
+        Category categoryToUpdate
+            = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         
         categoryToUpdate.setCategoryName(category.getCategoryName());
         categoryRepository.save(categoryToUpdate);

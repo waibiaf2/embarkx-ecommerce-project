@@ -1,5 +1,6 @@
 package com.ecommerce.project.controller;
 
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import jakarta.validation.Valid;
@@ -39,11 +40,7 @@ public class CategoryController {
     @RequestMapping(value = "/public/categories/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
         Category category = categoryService.getCategory(categoryId);
-        try {
-            return new ResponseEntity<>(category, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found");
-        }
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
     @PostMapping("/admin/categories")
@@ -55,12 +52,7 @@ public class CategoryController {
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         String status = categoryService.deleteCategory(categoryId);
-        try {
-            //return ResponseEntity.ok(status);
-            return ResponseEntity.status(HttpStatus.OK).body(status);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(status);
     }
 
     @PutMapping("/admin/categories/{categoryId}")
@@ -72,7 +64,7 @@ public class CategoryController {
         try {
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
         } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+            throw new ResourceNotFoundException("Category", "categoryId", categoryId);
         }
     }
 }
