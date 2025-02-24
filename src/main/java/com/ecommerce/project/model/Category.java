@@ -15,9 +15,9 @@ import lombok.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long categoryId;
     
     @NotBlank(message = "categoryName must not be blank")
     @Size(min = 5, message = "name must contain be at least 5 characters")
-    private String name;
+    private String categoryName;
 }

@@ -1,19 +1,18 @@
 ### Get All Categories
-GET {{host}}/public/categories
+GET {{host}}/public/categories?pageNumber=0&sortBy=categoryName&sortOrder=asc
 
 ### Get A Category
 @categoryId2 = 1
 GET {{host}}/public/categories/{{categoryId2}}
 
-## **********************************************************************
+##**********************************************************************
 ### Add A Category
 POST {{host}}/admin/categories
 Content-Type: application/json
 
 {
-  "name": "Education and Industrial Training"
+  "name": "Advertising and Marketing"
 }
-
 
 ### Update A Category
 @categoryId = 1
