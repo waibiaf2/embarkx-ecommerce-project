@@ -2,7 +2,7 @@
 GET {{host}}/public/categories
 
 ### Get A Category
-@categoryId2 = 4
+@categoryId2 = 1
 GET {{host}}/public/categories/{{categoryId2}}
 
 ## **********************************************************************
@@ -11,20 +11,23 @@ POST {{host}}/admin/categories
 Content-Type: application/json
 
 {
-  "name": "Leisure and Hospitality"
+  "name": "Education and Industrial Training"
 }
 
 
 ### Update A Category
-@categoryId = 4
+@categoryId = 1
 PUT {{host}}/admin/categories/{{categoryId}}
 Content-Type: application/json
 
 {
-  "name": "Leisure and Hospitality"
+  "name": "Education and Industrial Training"
 }
 
 ### Delete A Category
-@categoryId3 = 4
+@categoryId3 = 1
 DELETE {{host}}/admin/categories/{{categoryId3}}
+
+### Echo
+GET {{host}}/echo?message=Hi
 

@@ -5,6 +5,9 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Entity(name = "categories")
+@NamedQueries({
+    @NamedQuery(name = "Category.findAll", query = "select c from categories c")
+})
 @Setter
 @Getter
 @NoArgsConstructor
@@ -15,7 +18,6 @@ public class Category {
     private Long id;
     
     @NotBlank(message = "categoryName must not be blank")
-    @Size(min = 5, message = "categoryName must contain be at least 5 characters")
+    @Size(min = 5, message = "name must contain be at least 5 characters")
     private String name;
 }
-
