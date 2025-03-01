@@ -30,16 +30,19 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/1/product
+POST {{host}}/admin/category/2/product
 Content-Type: application/json
 
 {
-  "productName": "Picaboo Tools",
-  "description": "Wonderful tools for kids",
+  "productName": "Flash Light",
+  "description": "A racing car that is used in Formular One Racing",
   "quantity": 10,
   "price": 4400.00,
   "discount": 15.00
 }
 
 ### Get All Products
-GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productName&sortOrder=asc
+GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
+
+### Get Products By Category
+GET {{host}}/public/category/1/products

@@ -4,6 +4,7 @@ import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
+import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
 import com.ecommerce.project.repositories.CategoryRepository;
@@ -74,6 +75,33 @@ public class ProductServiceImpl implements ProductService {
         productResponse.setTotalElements(productsPage.getTotalElements());
         productResponse.setTotalPages(productsPage.getTotalPages());
         productResponse.setLastPage(productsPage.isLast());
+        
+        return productResponse;
+    }
+    
+    @Override
+    public ProductResponse getProductsByCategory(Long categoryId) {
+        Category category = categoryRepository
+            .findById(categoryId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Category", "categoryId", categoryId)
+            );
+        
+        List<Product>  products = productRepository.findByCategoryOrderByPrice(category);
+        
+        List<ProductDTO> productDTOS = products.stream()
+            .map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+        
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOS);
+        
+        /*
+        productResponse.setPage(pageNumber);
+        productResponse.setPageSize(pageSize);
+        productResponse.setTotalElements(productsPage.getTotalElements());
+        productResponse.setTotalPages(productsPage.getTotalPages());
+        productResponse.setLastPage(productsPage.isLast());
+        */
         
         return productResponse;
     }
