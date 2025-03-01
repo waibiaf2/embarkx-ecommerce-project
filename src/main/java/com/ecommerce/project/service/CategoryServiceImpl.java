@@ -63,9 +63,6 @@ public class CategoryServiceImpl implements CategoryService {
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
         List<Category> categories = categoryPage.getContent();
         
-        if(categoryPage.isEmpty())
-            throw new APIException("No more categories available!");
-        
         if (categories.isEmpty())
             throw new APIException("No categories have been create yet!");
         

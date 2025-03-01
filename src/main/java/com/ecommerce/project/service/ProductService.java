@@ -6,4 +6,5 @@ import com.ecommerce.project.payload.ProductResponse;
 
 public interface ProductService {
     ProductDTO addProduct(Product product, Long categoryId);
+    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String orderBy);
 }

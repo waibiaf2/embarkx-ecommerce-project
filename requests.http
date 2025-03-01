@@ -27,15 +27,19 @@ Content-Type: application/json
 @categoryId3 = 1
 DELETE {{host}}/admin/categories/{{categoryId3}}
 
-## ******************* PRODUCT OPERATIONS *******************************************
+## ******************* PRODUCT OPERATIONS ******************************************
+##**********************************************************************************
 ### Add A Product
 POST {{host}}/admin/category/1/product
 Content-Type: application/json
 
 {
-  "productName": "Legal Blocks",
-  "description": "A robot is a machine that can carry out a complex series of actions automatically.",
+  "productName": "Picaboo Tools",
+  "description": "Wonderful tools for kids",
   "quantity": 10,
-  "price": 1000.00,
-  "discount": 20.00
+  "price": 4400.00,
+  "discount": 15.00
 }
+
+### Get All Products
+GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productName&sortOrder=asc

@@ -24,4 +24,14 @@ public class ProductController {
         return new ResponseEntity<>(savedProductDTO, HttpStatus.CREATED);
     }
     
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> getProducts(
+        @RequestParam(name="pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+        @RequestParam(name="pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+        @RequestParam(name="sortBy", defaultValue = "categoryId", required = false) String sortBy,
+        @RequestParam(name="orderBy", defaultValue = "asc", required = false) String orderBy
+    ) {
+        ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, orderBy);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
 }
