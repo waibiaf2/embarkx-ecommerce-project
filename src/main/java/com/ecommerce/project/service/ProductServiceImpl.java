@@ -28,14 +28,21 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
-        Product product = modelMapper.map(productDTO, Product.class);
-        Category category = categoryRepository.findById(categoryId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
-                
-        product.setCategory(category);
+    public ProductDTO addProduct(Product product, Long categoryId) {
+        Category category
+            = categoryRepository
+                  .findById(categoryId)
+                  .orElseThrow(
+                      () -> new ResourceNotFoundException("Category", "categoryId", categoryId)
+                  );
         
+        product.setImage("default.png");
+        product.setCategory(category);
+        double specialPrice = product.getPrice() -
+                                  ((product.getDiscount() * 0.01) * product.getPrice());
+        product.setSpecialPrice(specialPrice);
         Product savedProduct = productRepository.save(product);
+        
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 }
