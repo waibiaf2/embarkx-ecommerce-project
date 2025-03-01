@@ -85,7 +85,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryResponse;
     }
     
-    
     @Override
     public CategoryDTO deleteCategory(Long id) {
         Category categoryToDelete

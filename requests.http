@@ -1,5 +1,5 @@
 ### Get All Categories
-GET {{host}}/public/categories?pageNumber=0&sortBy=categoryName&sortOrder=asc
+GET {{host}}/public/categories?pageNumber=2&sortBy=categoryId&sortOrder=desc
 
 ### Get A Category
 @categoryId2 = 1

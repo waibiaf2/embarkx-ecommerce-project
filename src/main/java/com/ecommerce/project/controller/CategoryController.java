@@ -25,7 +25,6 @@ public class CategoryController {
         @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
         @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORY_BY, required = false) String sortBy,
         @RequestParam(name = "sortOrder", defaultValue = AppConstants.ORDER_CATEGORY_BY, required = false) String sortOrder
-        
     ) {
         CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize,sortBy,sortOrder);
         return new ResponseEntity<>(categories, HttpStatus.OK);
