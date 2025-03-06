@@ -120,9 +120,14 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public ProductResponse getProductsByKeyWord(String keyword) {
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%');
+    public ProductResponse getProductsByKeyWord(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String orderBy) {
+        Sort sort = orderBy.equalsIgnoreCase("asc") ?
+            Sort.by(sortBy).ascending() :
+            Sort.by(sortBy).descending();
         
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> productsPage = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%', pageDetails);
+        List<Product>  products = productsPage.getContent();
         if(products.isEmpty())
             throw new APIException("There are no products matching keyword: " + keyword);
         
@@ -131,6 +136,11 @@ public class ProductServiceImpl implements ProductService {
         
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
+        productResponse.setPage(pageNumber);
+        productResponse.setPageSize(pageSize);
+        productResponse.setTotalElements(productsPage.getTotalElements());
+        productResponse.setTotalPages(productsPage.getTotalPages());
+        productResponse.setLastPage(productsPage.isLast());
         
         return productResponse;
     }

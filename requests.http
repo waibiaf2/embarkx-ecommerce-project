@@ -11,7 +11,7 @@ POST {{host}}/admin/categories
 Content-Type: application/json
 
 {
-  "categoryName": "Men's Fashion"
+  "categoryName": "Men's Apparel"
 }
 
 ### Update A Category
@@ -31,11 +31,11 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/1/product
+POST {{host}}/admin/category/2/product
 Content-Type: application/json
 
 {
-  "productName": "Cotton Shirt",
+  "productName": "Gentle Sheoes",
   "description": "A beautiful piece of machinery...",
   "quantity": 10,
   "price": 3500.00,
@@ -50,10 +50,10 @@ GET {{host}}/public/products/{{fetchedProductId}}
 GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
 
 ### Get Products By Category
-GET {{host}}/public/category/1/products
+GET {{host}}/public/category/2/products
 
 ### Get Products By Keyword
-GET {{host}}/public/products/keyword/custom
+GET {{host}}/public/products/keyword/car
 
 ### Update A Product
 @productId = 1
