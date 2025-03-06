@@ -22,7 +22,7 @@ public class Product {
     private Double specialPrice;
     private Double discount = 0.0;
     
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, optional = false)
     @JoinColumn(name = "category_id")
     private Category category;
 }
