@@ -46,9 +46,8 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public CategoryDTO getCategory(Long id) {
-        Category category
-            = categoryRepository.findById(id)
-                  .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
         
         return modelMapper.map(category, CategoryDTO.class);
     }
@@ -56,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ?
-                                  Sort.by(sortBy).ascending() :
-                                  Sort.by(sortBy).descending();
+            Sort.by(sortBy).ascending() :
+            Sort.by(sortBy).descending();
         
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
@@ -68,8 +67,8 @@ public class CategoryServiceImpl implements CategoryService {
         
         List<CategoryDTO> categoryDTOS
             = categories.stream()
-                  .map(category -> modelMapper.map(category, CategoryDTO.class))
-                  .toList();
+            .map(category -> modelMapper.map(category, CategoryDTO.class))
+            .toList();
         
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
@@ -84,22 +83,23 @@ public class CategoryServiceImpl implements CategoryService {
     
     @Override
     public CategoryDTO deleteCategory(Long id) {
-        Category categoryToDelete
-            = categoryRepository.findById(id)
-                  .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", id));
+        Category categoryToDelete = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", id));
+        
         categoryRepository.delete(categoryToDelete);
         
         return modelMapper.map(categoryToDelete, CategoryDTO.class);
     }
     
     @Override
-    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
+    public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO) {
         Category categoryToUpdate
-            = categoryRepository.findById(id)
-                  .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", id));
+            = categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         
         Category category = modelMapper.map(categoryDTO, Category.class);
         categoryToUpdate.setCategoryName(category.getCategoryName());
+        categoryToUpdate.setCategoryId(category.getCategoryId());
         categoryRepository.save(categoryToUpdate);
         
         return modelMapper.map(categoryToUpdate, CategoryDTO.class);
