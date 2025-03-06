@@ -50,6 +50,14 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
+    public ProductDTO getProductById(Long productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new ResourceNotFoundException("Product", "Id", productId));
+            
+        return modelMapper.map(product, ProductDTO.class);
+    }
+    
+    @Override
     public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String orderBy) {
         Sort sortOrder = orderBy.equalsIgnoreCase("asc") ?
             Sort.by(sortBy).ascending() :
@@ -141,12 +149,12 @@ public class ProductServiceImpl implements ProductService {
     
     @Override
     public ProductDTO deleteProduct(Long productId) {
-        // find the product to delete, throw exception if it does not exist
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product", "Id", productId));
-        // Delete the product
         productRepository.delete(product);
-        //return the product that was deleted
+        
         return modelMapper.map(product, ProductDTO.class);
     }
+    
+    
 }

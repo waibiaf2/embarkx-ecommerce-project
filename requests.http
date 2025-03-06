@@ -42,6 +42,10 @@ Content-Type: application/json
   "discount": 25.00
 }
 
+### Get A Product
+@fetchedProductId= 1
+GET {{host}}/public/products/{fetchedProductId}
+
 ### Get All Products
 GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
 
