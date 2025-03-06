@@ -20,7 +20,8 @@ PUT {{host}}/admin/categories/{{categoryId}}
 Content-Type: application/json
 
 {
-  "name": "Education and Industrial Training"
+  "name": "Education and Industrial Training",
+  "categoryId": 2
 }
 
 ### Delete A Category
@@ -30,19 +31,36 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/2/product
+POST {{host}}/admin/category/1/product
 Content-Type: application/json
 
 {
-  "productName": "Flash Light",
-  "description": "A racing car that is used in Formular One Racing",
+  "productName": "Legal Blocks",
+  "description": "Beautiful legal blocks for kids",
   "quantity": 10,
-  "price": 4400.00,
-  "discount": 15.00
+  "price": 3500.00,
+  "discount": 25.00
 }
 
 ### Get All Products
 GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
 
 ### Get Products By Category
-GET {{host}}/public/category/1/products
+GET {{host}}/public/category/2/products
+
+### Get Products By Keyword
+GET {{host}}/public/products/keyword/shoe
+
+### Update A Product
+@productId = 1
+PUT {{host}}/admin/products/{{productId}}
+Content-Type: application/json
+
+{
+  "productName": "Custom Legal Blocks",
+  "description": "Comfy and durable casual footwear",
+  "image": "default.png",
+  "quantity": 20,
+  "price": 1000.0,
+  "discount": 50.0
+}

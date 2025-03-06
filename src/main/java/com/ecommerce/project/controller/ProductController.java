@@ -25,7 +25,7 @@ public class ProductController {
     }
     
     @GetMapping("/public/products")
-    public ResponseEntity<ProductResponse> getProducts(
+    public ResponseEntity<ProductResponse> getAllProducts(
         @RequestParam(name="pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
         @RequestParam(name="pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
         @RequestParam(name="sortBy", defaultValue = "categoryId", required = false) String sortBy,
@@ -45,5 +45,17 @@ public class ProductController {
     ) {
         ProductResponse productResponse = productService.getProductsByCategory(categoryId);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+    
+    @GetMapping("/public/products/keyword/{keyword}")
+    public ResponseEntity<ProductResponse> findProductsByKeyWord(@PathVariable String keyword) {
+        ProductResponse productResponse = productService.getProductsByKeyWord(keyword);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+    
+    @PutMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product, @PathVariable Long productId) {
+        ProductDTO updatedProductDTO = productService.updateProduct(productId, product);
+        return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 }
