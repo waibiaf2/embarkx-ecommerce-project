@@ -19,8 +19,8 @@ public class ProductController {
     }
     
     @PostMapping("/admin/category/{categoryId}/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody Product product, @PathVariable Long categoryId) {
-        ProductDTO savedProductDTO = productService.addProduct(product, categoryId);
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
+        ProductDTO savedProductDTO = productService.addProduct(productDTO, categoryId);
         return new ResponseEntity<>(savedProductDTO, HttpStatus.CREATED);
     }
     
@@ -46,10 +46,10 @@ public class ProductController {
         @PathVariable Long categoryId,
         @RequestParam(name="pageNumber", defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
         @RequestParam(name="pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
-        @RequestParam(name="sortBy", defaultValue = "categoryId", required = false) String sortBy,
+        @RequestParam(name="sortBy", defaultValue = "price", required = false) String sortBy,
         @RequestParam(name="orderBy", defaultValue = "asc", required = false) String orderBy
     ) {
-        ProductResponse productResponse = productService.getProductsByCategory(categoryId);
+        ProductResponse productResponse = productService.getProductsByCategory(categoryId, pageNumber, pageSize, sortBy, orderBy);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
     
@@ -60,8 +60,8 @@ public class ProductController {
     }
     
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product, @PathVariable Long productId) {
-        ProductDTO updatedProductDTO = productService.updateProduct(productId, product);
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO, @PathVariable Long productId) {
+        ProductDTO updatedProductDTO = productService.updateProduct(productId, productDTO);
         return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
     

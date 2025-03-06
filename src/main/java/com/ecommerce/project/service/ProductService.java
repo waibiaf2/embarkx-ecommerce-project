@@ -5,11 +5,11 @@ import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
 
 public interface ProductService {
-    ProductDTO addProduct(Product product, Long categoryId);
+    ProductDTO addProduct(ProductDTO productDTO, Long categoryId);
     ProductResponse getAllProducts(Integer pageNumber,Integer pageSize, String sortBy, String orderBy);
-    ProductResponse getProductsByCategory(Long categoryId);
+    ProductResponse getProductsByCategory(Long categoryId,Integer pageNumber,Integer pageSize, String sortBy, String orderBy);
     ProductResponse getProductsByKeyWord(String keyword);
-    ProductDTO updateProduct(Long productId, Product product);
+    ProductDTO updateProduct(Long productId, ProductDTO productDTO);
     ProductDTO deleteProduct(Long productId);
     ProductDTO getProductById(Long productId);
 }

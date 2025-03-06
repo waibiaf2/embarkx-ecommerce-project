@@ -31,11 +31,11 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/1/product
+POST {{host}}/admin/category/2/product
 Content-Type: application/json
 
 {
-  "productName": "Formula One Racing Car",
+  "productName": "Cotton Shirt",
   "description": "A beautiful piece of machinery...",
   "quantity": 10,
   "price": 3500.00,
@@ -50,10 +50,10 @@ GET {{host}}/public/products/{fetchedProductId}
 GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
 
 ### Get Products By Category
-GET {{host}}/public/category/2/products
+GET {{host}}/public/category/1/products
 
 ### Get Products By Keyword
-GET {{host}}/public/products/keyword/shoe
+GET {{host}}/public/products/keyword/custom
 
 ### Update A Product
 @productId = 1
