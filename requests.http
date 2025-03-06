@@ -31,7 +31,7 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/2/product
+POST {{host}}/admin/category/1/product
 Content-Type: application/json
 
 {
@@ -44,7 +44,7 @@ Content-Type: application/json
 
 ### Get A Product
 @fetchedProductId= 1
-GET {{host}}/public/products/{fetchedProductId}
+GET {{host}}/public/products/{{fetchedProductId}}
 
 ### Get All Products
 GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder=asc
@@ -68,7 +68,6 @@ Content-Type: application/json
   "price": 1000.0,
   "discount": 50.0
 }
-
 
 ### Delete A Product
 @deletedProductId = 1
