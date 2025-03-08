@@ -28,8 +28,6 @@ public class MyGlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
     
-    
-    
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, String>> myConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> response = new HashMap<>();
