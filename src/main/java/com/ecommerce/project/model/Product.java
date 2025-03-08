@@ -19,7 +19,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long productId;
     
-    
     @NotBlank(message = "Product name is required")
     @Size(min = 3, message = "Product name must be at least 5 characters")
     private String productName;
@@ -28,6 +27,7 @@ public class Product {
     private String description;
     
     @Min(value = 0, message = "Price must be grater or equal to 0")
+    @NumberFormat(style = NumberFormat.Style.CURRENCY)
     private Double price;
     
     private String image;
