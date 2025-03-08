@@ -31,12 +31,12 @@ DELETE {{host}}/admin/categories/{{categoryId3}}
 ## ******************* PRODUCT OPERATIONS ******************************************
 ##**********************************************************************************
 ### Add A Product
-POST {{host}}/admin/category/2/product
+POST {{host}}/admin/category/1/product
 Content-Type: application/json
 
 {
-  "productName": "Gentle Sheoes",
-  "description": "A beautiful piece of machinery...",
+  "productName": "Leather Jacket",
+  "description": "A warm leather jacket suitable for cold weather...",
   "quantity": 10,
   "price": 3500.00,
   "discount": 25.00
@@ -53,7 +53,7 @@ GET {{host}}/public/products?pageNumber=0&pageSize=10&sortBy=productId&sortOrder
 GET {{host}}/public/category/2/products
 
 ### Get Products By Keyword
-GET {{host}}/public/products/keyword/car
+GET {{host}}/public/products/keyword/she
 
 ### Update A Product
 @productId = 1
@@ -61,14 +61,20 @@ PUT {{host}}/admin/products/{{productId}}
 Content-Type: application/json
 
 {
-  "productName": "Custom Legal Blocks",
-  "description": "Comfy and durable casual footwear",
-  "image": "default.png",
-  "quantity": 20,
-  "price": 1000.0,
-  "discount": 50.0
+  "productName": "Gentle Shoes",
+  "description": "A beautiful piece of machinery...",
+  "quantity": 10,
+  "price": 3500.00,
+  "discount": 25.00
 }
 
 ### Delete A Product
 @deletedProductId = 1
 DELETE {{host}}/admin/products/{{deletedProductId}}
+
+
+### Update product Image
+@productIdToUpdateImage = 1
+PUT {{host}}/product/{{productIdToUpdateImage}}/image
+Content-Type: multipart/form-data
+
