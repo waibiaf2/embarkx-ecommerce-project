@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/v1/admin/categories/2
+Content-Type: application/json
+
+{
+  "name": "{{$random.commerce.price}} Education and Industrial Training",
+  "categoryId": 2
+}
