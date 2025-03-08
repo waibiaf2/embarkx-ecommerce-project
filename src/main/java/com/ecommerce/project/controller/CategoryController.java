@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(AppConstants.BASE_URL)
 public class CategoryController {
     
     private final CategoryService categoryService;
@@ -23,8 +23,8 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> getAllCategories(
         @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
         @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
-        @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORY_BY, required = false) String sortBy,
-        @RequestParam(name = "sortOrder", defaultValue = AppConstants.ORDER_CATEGORY_BY, required = false) String sortOrder
+        @RequestParam(name = "sortBy", defaultValue = AppConstants.CATEGORY_SORT_BY, required = false) String sortBy,
+        @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_ORDER_DIRECTION, required = false) String sortOrder
     ) {
         CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize,sortBy,sortOrder);
         return new ResponseEntity<>(categories, HttpStatus.OK);
