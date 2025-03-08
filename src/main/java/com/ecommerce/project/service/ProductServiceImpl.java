@@ -17,12 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -51,8 +47,17 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository
             .findById(categoryId)
             .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-        Product product = modelMapper.map(productDTO, Product.class);
         
+        List<Product> products = category.getProducts();
+        for (Product productItem : products) {
+            boolean isProductExists =
+                productItem.getProductName().equals(productDTO.getProductName());
+            
+            if (isProductExists)
+                throw new APIException("Product with name: " + productDTO.getProductName() + " already exists in this category");
+        }
+        
+        Product product = modelMapper.map(productDTO, Product.class);
         product.setImage("default.png");
         product.setCategory(category);
         double specialPrice = product.getPrice() -
@@ -81,6 +86,7 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortOrder);
         Page<Product> productsPage = productRepository.findAll(pageDetails);
         List<Product> products = productsPage.getContent();
+        
         if (products.isEmpty())
             throw new APIException("There are no products created yet!");
         
@@ -119,6 +125,9 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productsPage = productRepository.findByCategory(category, pageDetails);
         List<Product> products = productsPage.getContent();
         
+        if (products.isEmpty())
+            throw new APIException("There are no products in this category yet!");
+        
         List<ProductDTO> productDTOS = products.stream()
             .map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         
@@ -142,6 +151,7 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> productsPage = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%', pageDetails);
         List<Product> products = productsPage.getContent();
+        
         if (products.isEmpty())
             throw new APIException("There are no products matching keyword: " + keyword);
         
@@ -173,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
         if (product.getPrice() != null) {
             existingProduct.setPrice(product.getPrice());
             
-            if(existingProduct.getDiscount() != null)
+            if (existingProduct.getDiscount() != null)
                 existingProduct.setDiscount(product.getDiscount());
             
             if (product.getDiscount() != null) {
@@ -183,7 +193,6 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         
-       
         
         productRepository.save(existingProduct);
         
@@ -201,15 +210,6 @@ public class ProductServiceImpl implements ProductService {
     
     @Override
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
-        /**
-         * 1. Get Product from DB
-         * 2. Upload image to the server
-         * 3. Get the filename of uploaded image
-         * 4. Save updateProduct
-         * 5. Updating the new file name to the product.
-         * 6. Return the update DTO.
-         * */
-        
         Product productFromDB = productRepository.findById(productId)
             .orElseThrow(
                 () -> new ResourceNotFoundException("Product", "productId", productId)
