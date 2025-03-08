@@ -9,29 +9,42 @@ import com.ecommerce.project.payload.ProductResponse;
 import com.ecommerce.project.repositories.CategoryRepository;
 import com.ecommerce.project.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final FileService fileService;
     private final ModelMapper modelMapper;
     
     public ProductServiceImpl(
         ProductRepository productRepository,
         ModelMapper modelMapper,
-        CategoryRepository categoryRepository
+        CategoryRepository categoryRepository,
+        FileService fileService
     ) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
+        this.fileService = fileService;
     }
+    
+    @Value("${project.images")
+    private String path;
     
     @Override
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
@@ -54,9 +67,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductById(Long productId) {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product", "Id", productId));
-            
+        
         return modelMapper.map(product, ProductDTO.class);
     }
+    
     
     @Override
     public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String orderBy) {
@@ -103,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
             Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortOrder);
         Page<Product> productsPage = productRepository.findByCategory(category, pageDetails);
-        List<Product>  products = productsPage.getContent();
+        List<Product> products = productsPage.getContent();
         
         List<ProductDTO> productDTOS = products.stream()
             .map(product -> modelMapper.map(product, ProductDTO.class)).toList();
@@ -127,8 +141,8 @@ public class ProductServiceImpl implements ProductService {
         
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> productsPage = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%', pageDetails);
-        List<Product>  products = productsPage.getContent();
-        if(products.isEmpty())
+        List<Product> products = productsPage.getContent();
+        if (products.isEmpty())
             throw new APIException("There are no products matching keyword: " + keyword);
         
         List<ProductDTO> productDTOS = products.stream()
@@ -147,22 +161,29 @@ public class ProductServiceImpl implements ProductService {
     
     @Override
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
-        Product product = modelMapper.map(productDTO, Product.class);
         Product existingProduct = productRepository.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException("Product", "Id", productId));
         
+        Product product = modelMapper.map(productDTO, Product.class);
+        
         existingProduct.setProductName(product.getProductName());
-        if (product.getPrice() != null)
-            existingProduct.setPrice(product.getPrice());
-        existingProduct.setDiscount(product.getDiscount());
         existingProduct.setQuantity(product.getQuantity());
         existingProduct.setDescription(product.getDescription());
         
-        if(product.getDiscount() != null) {
-            double specialPrice = product.getPrice() -
-                ((product.getDiscount() / 100) * product.getPrice());
-            existingProduct.setSpecialPrice(specialPrice);
+        if (product.getPrice() != null) {
+            existingProduct.setPrice(product.getPrice());
+            
+            if(existingProduct.getDiscount() != null)
+                existingProduct.setDiscount(product.getDiscount());
+            
+            if (product.getDiscount() != null) {
+                double specialPrice = product.getPrice() -
+                    ((product.getDiscount() * 0.01) * product.getPrice());
+                existingProduct.setSpecialPrice(specialPrice);
+            }
         }
+        
+       
         
         productRepository.save(existingProduct);
         
@@ -177,4 +198,29 @@ public class ProductServiceImpl implements ProductService {
         
         return modelMapper.map(product, ProductDTO.class);
     }
+    
+    @Override
+    public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
+        /**
+         * 1. Get Product from DB
+         * 2. Upload image to the server
+         * 3. Get the filename of uploaded image
+         * 4. Save updateProduct
+         * 5. Updating the new file name to the product.
+         * 6. Return the update DTO.
+         * */
+        
+        Product productFromDB = productRepository.findById(productId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Product", "productId", productId)
+            );
+        
+        
+        String fileName = fileService.uploadFile(path, image);
+        productFromDB.setImage(fileName);
+        Product savedProduct = productRepository.save(productFromDB);
+        
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+    
 }
