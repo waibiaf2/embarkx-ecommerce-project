@@ -32,13 +32,14 @@ public class MyGlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> myConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> response = new HashMap<>();
         
-        ex.getConstraintViolations().forEach((err) -> {;
+        ex.getConstraintViolations().forEach((err) -> {
             String fieldName = err.getPropertyPath().toString();
             String errorMessage = err.getMessage();
             response.put(fieldName, errorMessage);
         });
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(ResourceNotFoundException.class)
