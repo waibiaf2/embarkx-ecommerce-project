@@ -1,45 +1,49 @@
 package com.ecommerce.project.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.NumberFormat;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
+@ToString
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long productId;
-    
-    @NotBlank(message = "Product name is required")
-    @Size(min = 3, message = "Product name must be at least 5 characters")
+
+    @NotBlank
+    @Size(min = 3, message = "Product name must contain atleast 3 characters")
     private String productName;
-    
-    @Size(min = 6, message = "Product name must be at least 5 characters")
-    private String description;
-    
-    @Min(value = 0, message = "Price must be grater or equal to 0")
-    @NumberFormat(style = NumberFormat.Style.CURRENCY)
-    private Double price;
-    
     private String image;
-    
-    @Min(value = 1, message = "Quantity must be at least 1")
+
+    @NotBlank
+    @Size(min = 6, message = "Product description must contain atleast 6 characters")
+    private String description;
     private Integer quantity;
-    
-    private Double specialPrice;
-    
-    @Min(value = 0, message = "Discount must be grater or equal to 0")
-    private Double discount = 0.0;
-    
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, optional = false)
+    private double price;
+    private double discount;
+    private double specialPrice;
+
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User user;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private List<CartItem> products = new ArrayList<>();
 }
