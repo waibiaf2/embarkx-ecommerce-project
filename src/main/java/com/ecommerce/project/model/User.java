@@ -52,8 +52,6 @@ public class User {
         this.password = password;
     }
     
-    @Setter
-    @Getter
     @ManyToMany(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE},
         fetch = FetchType.EAGER
@@ -65,8 +63,6 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
     
-    @Getter
-    @Setter
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 //    @JoinTable(name = "user_address",
 //                joinColumns = @JoinColumn(name = "user_id"),
