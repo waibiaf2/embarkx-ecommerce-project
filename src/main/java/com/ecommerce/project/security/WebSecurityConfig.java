@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -28,7 +29,7 @@ import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
@@ -68,13 +69,13 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/api/auth/**").permitAll()
+                auth.requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/v3/api-docs/**").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
                     //.requestMatchers("/api/admin/**").permitAll()
-                    .requestMatchers("/api/public/**").permitAll()
+                    .requestMatchers("/api/v1/public/**").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers("/api/test/**").permitAll()
+                    .requestMatchers("/api/v1/test/**").permitAll()
                     .requestMatchers("/images/**").permitAll()
                     .anyRequest().authenticated()
             );
