@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
-@RequestMapping(AppConstants.BASE_URL)
+@RequestMapping(AppConstants.BASE_URL + "/auth")
 public class AuthController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
