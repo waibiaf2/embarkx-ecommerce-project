@@ -33,7 +33,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-        
         logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
         
         try {
@@ -49,6 +48,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         null,
                         userDetails.getAuthorities()
                     );
+                
                 logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
                 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

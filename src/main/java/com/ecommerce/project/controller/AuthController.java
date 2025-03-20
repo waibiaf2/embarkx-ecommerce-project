@@ -12,18 +12,19 @@ import com.ecommerce.project.security.request.SignupRequest;
 import com.ecommerce.project.security.response.MessageResponse;
 import com.ecommerce.project.security.response.UserInfoResponse;
 import com.ecommerce.project.security.services.UserDetailsImpl;
+import com.ecommerce.project.security.services.UserDetailsServiceImpl;
+import com.ecommerce.project.security.services.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
 @RestController
@@ -34,19 +35,25 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserServiceImpl useServiceImpl;
+    private final UserServiceImpl userServiceImpl;
     
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtUtils jwtUtils,
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
-        RoleRepository roleRepository
-    ) {
+        RoleRepository roleRepository,
+        UserDetailsServiceImpl userDetailsServiceImpl, UserServiceImpl useServiceImpl, UserServiceImpl userServiceImpl) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.useServiceImpl = useServiceImpl;
+        this.userServiceImpl = userServiceImpl;
     }
     
     @PostMapping("/signin")
@@ -146,4 +153,10 @@ public class AuthController {
         );
     }
     
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userServiceImpl.fetchAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 }

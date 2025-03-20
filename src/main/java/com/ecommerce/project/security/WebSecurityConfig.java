@@ -62,7 +62,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
     
-    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -126,7 +125,7 @@ public class WebSecurityConfig {
                 });
             
             Set<Role> userRoles = Set.of(userRole);
-            Set<Role> sellerRoles = Set.of(sellerRole, adminRole);
+            Set<Role> sellerRoles = Set.of(sellerRole, userRole);
             Set<Role> adminRoles = Set.of(userRole, sellerRole, adminRole);
             
             // Create users if not already present
