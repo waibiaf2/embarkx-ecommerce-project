@@ -65,7 +65,7 @@ public class AuthController {
         this.userServiceImpl = userServiceImpl;
     }
     
-    @PostMapping("/signin")
+  /*  @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication;
         
@@ -103,9 +103,9 @@ public class AuthController {
         
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    */
     
-    
-    @PostMapping("/signin/cookie")
+    @PostMapping("/signin")
     public ResponseEntity<?> signinCookie(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = null;
         try {
