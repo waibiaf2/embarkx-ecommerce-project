@@ -32,7 +32,7 @@ import java.util.Set;
 @EnableMethodSecurity
 public class WebSecurityConfig {
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -87,7 +87,6 @@ public class WebSecurityConfig {
         
         return http.build();
     }
-    
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web -> web.ignoring().requestMatchers("/v2/api-docs",

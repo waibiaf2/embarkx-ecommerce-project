@@ -7,6 +7,7 @@ import com.ecommerce.project.model.User;
 import com.ecommerce.project.repositories.RoleRepository;
 import com.ecommerce.project.repositories.UserRepository;
 import com.ecommerce.project.security.jwt.JwtUtils;
+import com.ecommerce.project.security.jwt.JwtUtilsCookie;
 import com.ecommerce.project.security.request.LoginRequest;
 import com.ecommerce.project.security.request.SignupRequest;
 import com.ecommerce.project.security.response.MessageResponse;
@@ -14,16 +15,21 @@ import com.ecommerce.project.security.response.UserInfoResponse;
 import com.ecommerce.project.security.services.UserDetailsImpl;
 import com.ecommerce.project.security.services.UserDetailsServiceImpl;
 import com.ecommerce.project.security.services.UserServiceImpl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -34,25 +40,28 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final JwtUtilsCookie jwtUtilsCookie;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
-    private final UserServiceImpl useServiceImpl;
     private final UserServiceImpl userServiceImpl;
     
     public AuthController(
         AuthenticationManager authenticationManager,
         JwtUtils jwtUtils,
         UserRepository userRepository,
+        JwtUtilsCookie jwtUtilsCookie,
         PasswordEncoder passwordEncoder,
         RoleRepository roleRepository,
-        UserDetailsServiceImpl userDetailsServiceImpl, UserServiceImpl useServiceImpl, UserServiceImpl userServiceImpl) {
+        UserDetailsServiceImpl userDetailsServiceImpl,
+        UserServiceImpl userServiceImpl
+    ) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
+        this.jwtUtilsCookie = jwtUtilsCookie;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
-        this.useServiceImpl = useServiceImpl;
         this.userServiceImpl = userServiceImpl;
     }
     
@@ -62,13 +71,15 @@ public class AuthController {
         
         try {
             authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(
+                .authenticate(
+                    new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
                         loginRequest.getPassword()
                     )
                 );
         } catch (AuthenticationException ex) {
             Map<String, Object> map = new HashMap<>();
+            
             map.put("message", "Bad credentials");
             map.put("status", false);
             
@@ -76,10 +87,9 @@ public class AuthController {
         }
         
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
-        
         List<String> roles = userDetails.getAuthorities().stream()
             .map(item -> item.getAuthority())
             .toList();
@@ -87,15 +97,56 @@ public class AuthController {
         UserInfoResponse response = new UserInfoResponse(
             userDetails.getId(),
             userDetails.getUsername(),
-            roles,
-            jwtToken
+            jwtToken,
+            roles
         );
         
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
+    
+    @PostMapping("/signin/cookie")
+    public ResponseEntity<?> signinCookie(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+                )
+            );
+        } catch (AuthenticationException ex) {
+            Map<String, Object> map = new HashMap<>();
+            
+            map.put("message", "Bad Credentials");
+            map.put("status", false);
+        }
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        
+        ResponseCookie jwtCookie = jwtUtilsCookie.generateJwtCookie(userDetails);
+        List<String> roles = userDetails.getAuthorities().stream().map(
+            role -> role.getAuthority()
+        ).toList();
+        
+        UserInfoResponse response = new UserInfoResponse(
+            userDetails.getId(),
+            userDetails.getUsername(),
+            jwtCookie.toString(),
+            roles
+        );
+        
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+            .body(response);
+        
+    }
+    
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
+        
         boolean userNameExists = userRepository.existsByUserName(signupRequest.getUsername());
         boolean emailExists = userRepository.existsByEmail(signupRequest.getEmail());
         
@@ -120,6 +171,7 @@ public class AuthController {
             );
             
             roles.add(userRole);
+            
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
@@ -151,12 +203,5 @@ public class AuthController {
             new MessageResponse("User registered successfully!"),
             HttpStatus.CREATED
         );
-    }
-    
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userServiceImpl.fetchAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
