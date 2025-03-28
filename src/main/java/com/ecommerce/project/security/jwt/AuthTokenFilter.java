@@ -23,6 +23,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
     
     @Autowired
+    private JwtUtilsCookie jwtUtilsCookie;
+    
+    @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
     
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
@@ -37,8 +40,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            if (jwt != null && jwtUtilsCookie.validateJwtToken(jwt)) {
+                String username = jwtUtilsCookie.getUserNameFromJwtToken(jwt);
                 
                 UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(username);
                 
@@ -63,7 +66,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
     
     private String parseJwt(HttpServletRequest request) {
-        String jwt = jwtUtils.getJwtFromHeader(request);
+        //String jwt = jwtUtils.getJwtFromHeader(request);
+        String jwt = jwtUtilsCookie.getJwtFromCookie(request);
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
     }
