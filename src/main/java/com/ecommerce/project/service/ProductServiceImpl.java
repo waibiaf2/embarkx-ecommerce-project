@@ -180,19 +180,11 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setQuantity(product.getQuantity());
         existingProduct.setDescription(product.getDescription());
         
-        if (product.getPrice() != null) {
-            existingProduct.setPrice(product.getPrice());
-            
-            if (existingProduct.getDiscount() != null)
-                existingProduct.setDiscount(product.getDiscount());
-            
-            if (product.getDiscount() != null) {
-                double specialPrice = product.getPrice() -
-                    ((product.getDiscount() * 0.01) * product.getPrice());
-                existingProduct.setSpecialPrice(specialPrice);
-            }
-        }
-        
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setDiscount(product.getDiscount());
+        double specialPrice = product.getPrice() -
+            ((product.getDiscount() * 0.01) * product.getPrice());
+        existingProduct.setSpecialPrice(specialPrice);
         
         productRepository.save(existingProduct);
         
@@ -214,7 +206,6 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(
                 () -> new ResourceNotFoundException("Product", "productId", productId)
             );
-        
         
         String fileName = fileService.uploadFile(path, image);
         productFromDB.setImage(fileName);
