@@ -23,7 +23,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
     
     @Autowired
-    private JwtUtilsCookie jwtUtilsCookie;
+    private CookieUtils cookieUtils;
     
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -40,8 +40,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtilsCookie.validateJwtToken(jwt)) {
-                String username = jwtUtilsCookie.getUserNameFromJwtToken(jwt);
+            if (jwt != null && cookieUtils.validateJwtToken(jwt)) {
+                String username = cookieUtils.getUserNameFromJwtToken(jwt);
                 
                 UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(username);
                 
@@ -67,7 +67,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     
     private String parseJwt(HttpServletRequest request) {
         //String jwt = jwtUtils.getJwtFromHeader(request);
-        String jwt = jwtUtilsCookie.getJwtFromCookie(request);
+        String jwt = cookieUtils.getJwtFromCookie(request);
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
     }

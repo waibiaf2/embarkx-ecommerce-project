@@ -7,7 +7,7 @@ import com.ecommerce.project.model.User;
 import com.ecommerce.project.repositories.RoleRepository;
 import com.ecommerce.project.repositories.UserRepository;
 import com.ecommerce.project.security.jwt.JwtUtils;
-import com.ecommerce.project.security.jwt.JwtUtilsCookie;
+import com.ecommerce.project.security.jwt.CookieUtils;
 import com.ecommerce.project.security.request.LoginRequest;
 import com.ecommerce.project.security.request.SignupRequest;
 import com.ecommerce.project.security.response.MessageResponse;
@@ -24,12 +24,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -40,7 +36,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final JwtUtilsCookie jwtUtilsCookie;
+    private final CookieUtils cookieUtils;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserServiceImpl userServiceImpl;
@@ -49,7 +45,7 @@ public class AuthController {
         AuthenticationManager authenticationManager,
         JwtUtils jwtUtils,
         UserRepository userRepository,
-        JwtUtilsCookie jwtUtilsCookie,
+        CookieUtils cookieUtils,
         PasswordEncoder passwordEncoder,
         RoleRepository roleRepository,
         UserDetailsServiceImpl userDetailsServiceImpl,
@@ -58,7 +54,7 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
-        this.jwtUtilsCookie = jwtUtilsCookie;
+        this.cookieUtils = cookieUtils;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
@@ -124,16 +120,15 @@ public class AuthController {
         
         SecurityContextHolder.getContext().setAuthentication(authentication);
         
+        assert authentication != null;
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        
-        ResponseCookie jwtCookie = jwtUtilsCookie.generateJwtCookie(userDetails);
+        ResponseCookie jwtCookie = cookieUtils.generateJwtCookie(userDetails);
         List<String> roles = userDetails.getAuthorities().stream().map(
             role -> role.getAuthority()
         ).toList();
         
         UserInfoResponse response = new UserInfoResponse(
             userDetails.getId(),
-            jwtCookie.toString(),
             userDetails.getUsername(),
             roles
         );
@@ -203,5 +198,37 @@ public class AuthController {
             new MessageResponse("User registered successfully!"),
             HttpStatus.CREATED
         );
+    }
+    
+    @GetMapping("/username")
+    public String currentUserName(Authentication authentication){
+        if (authentication != null)
+            return authentication.getName();
+        else
+            return "";
+    }
+    
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserDetails(Authentication authentication){
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+            .map(item -> item.getAuthority())
+            .toList();
+        
+        UserInfoResponse response = new UserInfoResponse(
+            userDetails.getId(),
+            userDetails.getUsername(),
+            roles
+        );
+        
+        return ResponseEntity.ok().body(response);
+    }
+    
+    @PostMapping("/signout")
+    public ResponseEntity<?> signoutUser(){
+        ResponseCookie cookie = cookieUtils.getCleanJwtCookie();
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE,cookie.toString())
+            .body(new MessageResponse("You've been signed out!"));
     }
 }

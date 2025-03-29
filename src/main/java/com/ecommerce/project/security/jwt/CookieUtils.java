@@ -21,8 +21,8 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtUtilsCookie {
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtilsCookie.class);
+public class CookieUtils {
+    private static final Logger logger = LoggerFactory.getLogger(CookieUtils.class);
     
     @Value("${spring.app.jwtSecret}")
     private String jwtSecret;
