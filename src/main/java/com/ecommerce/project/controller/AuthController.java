@@ -102,7 +102,7 @@ public class AuthController {
    */
     
     @PostMapping("/signin")
-    public ResponseEntity<?> signinCookie(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUserWithCookie(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(
