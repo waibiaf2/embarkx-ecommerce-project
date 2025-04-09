@@ -41,7 +41,6 @@ public class CookieUtils {
         } else {
             return null;
         }
-        
     }
     
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
@@ -95,10 +94,8 @@ public class CookieUtils {
             logger.error("Invalid JWT token: {}", ex.getMessage());
         } catch (ExpiredJwtException ex) {
             logger.error("JWT token is expired: {}", ex.getMessage());
-            
         } catch (UnsupportedJwtException ex) {
             logger.error("JWT token unsupported: {}", ex.getMessage());
-            
         } catch (IllegalArgumentException ex) {
             logger.error("JWT claims string is empty: {}", ex.getMessage());
         }
