@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
         if(product.getQuantity() < quantity)
             throw new APIException(
                 "Please make an order of " + product.getProductName() + "less than or equal to" + product.getQuantity());
-            
+        
         // Create Cart Item
         CartItem cartItemToAdd = new CartItem();
         
@@ -72,6 +72,8 @@ public class CartServiceImpl implements CartService {
         cartItemToAdd.setDiscount(product.getDiscount());
         cartItemToAdd.setProductPrice(product.getSpecialPrice());
         cartItemToAdd.setCart(cart);
+        
+        
         
         // Save Cart Item
         cartItemRepository.save(cartItemToAdd);
