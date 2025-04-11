@@ -1,9 +1,7 @@
 package com.ecommerce.project.payload;
 
-import com.ecommerce.project.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
