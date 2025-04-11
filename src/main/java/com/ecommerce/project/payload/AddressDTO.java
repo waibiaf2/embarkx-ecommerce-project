@@ -2,19 +2,22 @@ package com.ecommerce.project.payload;
 
 import com.ecommerce.project.model.User;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO for {@link com.ecommerce.project.model.Address}
  */
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class AddressDTO {
-    private final Long addressId;
-    private final String street;
-    private final String buildingName;
-    private final String city;
-    private final String state;
-    private final String country;
-    private final String pincode;
+    private Long addressId;
+    private String street;
+    private String buildingName;
+    private String city;
+    private String state;
+    private String country;
+    private String pincode;
 }
