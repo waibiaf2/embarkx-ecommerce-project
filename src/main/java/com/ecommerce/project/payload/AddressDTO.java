@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for {@link com.ecommerce.project.model.Address}
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
