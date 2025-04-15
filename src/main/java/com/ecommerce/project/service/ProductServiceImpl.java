@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
         
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
-        productResponse.setPage(pageNumber);
+        productResponse.setPageNumber(pageNumber);
         productResponse.setPageSize(pageSize);
         productResponse.setTotalElements(productsPage.getTotalElements());
         productResponse.setTotalPages(productsPage.getTotalPages());
@@ -133,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
         
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
-        productResponse.setPage(pageNumber);
+        productResponse.setPageNumber(pageNumber);
         productResponse.setPageSize(pageSize);
         productResponse.setTotalElements(productsPage.getTotalElements());
         productResponse.setTotalPages(productsPage.getTotalPages());
@@ -160,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
         
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
-        productResponse.setPage(pageNumber);
+        productResponse.setPageNumber(pageNumber);
         productResponse.setPageSize(pageSize);
         productResponse.setTotalElements(productsPage.getTotalElements());
         productResponse.setTotalPages(productsPage.getTotalPages());
