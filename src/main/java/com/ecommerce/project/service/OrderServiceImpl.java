@@ -11,7 +11,6 @@ import com.ecommerce.project.repositories.OrderRepository;
 import com.ecommerce.project.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -111,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
             productRepository.save(product);
 
             // Remove items from cart
-            cartService.deleteProductFromCart(cart.getCartId(), item.getProduct().getProductId());
+            cartService.deleteProductFromCart(cart.getCartId(), product.getProductId());
         });
 
         OrderDTO orderDTO = modelMapper.map(savedOrder, OrderDTO.class);
