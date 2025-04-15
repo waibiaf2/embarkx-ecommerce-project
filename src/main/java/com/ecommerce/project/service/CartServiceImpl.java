@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.stream;
-
 @Service
 public class CartServiceImpl implements CartService {
     private final ProductRepository productRepository;
@@ -100,8 +98,12 @@ public class CartServiceImpl implements CartService {
             CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
             
             List<ProductDTO> products = cart.getCartItems().stream().map(
-                cartItem -> modelMapper.map(cartItem.getProduct(), ProductDTO.class)
+                cartItem -> {
+                    cartItem.getProduct().setQuantity(cartItem.getQuantity());
+                    return modelMapper.map(cartItem.getProduct(), ProductDTO.class);
+                }
             ).toList();
+            
             cartDTO.setProducts(products);
             
             return cartDTO;
