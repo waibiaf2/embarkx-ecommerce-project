@@ -20,34 +20,46 @@ import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
-    @Autowired
-    CartRepository cartRepository;
-
-    @Autowired
-    AddressRepository addressRepository;
-
-    @Autowired
-    OrderItemRepository orderItemRepository;
-
-    @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    PaymentRepository paymentRepository;
-
-    @Autowired
-    CartService cartService;
-
-    @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    ProductRepository productRepository;
-
+    final CartRepository cartRepository;
+    final AddressRepository addressRepository;
+    final OrderItemRepository orderItemRepository;
+    final OrderRepository orderRepository;
+    final PaymentRepository paymentRepository;
+    final CartService cartService;
+    final ModelMapper modelMapper;
+    final ProductRepository productRepository;
+    
+    public OrderServiceImpl(
+        CartRepository cartRepository,
+        AddressRepository addressRepository,
+        OrderItemRepository orderItemRepository,
+        OrderRepository orderRepository,
+        PaymentRepository paymentRepository,
+        CartService cartService,
+        ModelMapper modelMapper,
+        ProductRepository productRepository
+    ) {
+        this.cartRepository = cartRepository;
+        this.addressRepository = addressRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.orderRepository = orderRepository;
+        this.paymentRepository = paymentRepository;
+        this.cartService = cartService;
+        this.modelMapper = modelMapper;
+        this.productRepository = productRepository;
+    }
+    
     @Override
     @Transactional
-    public OrderDTO placeOrder(String emailId, Long addressId, String paymentMethod, String pgName, String pgPaymentId, String pgStatus, String pgResponseMessage) {
+    public OrderDTO placeOrder(
+        String emailId,
+        Long addressId,
+        String paymentMethod,
+        String pgName,
+        String pgPaymentId,
+        String pgStatus,
+        String pgResponseMessage
+    ) {
         Cart cart = cartRepository.findCartByEmail(emailId);
         if (cart == null) {
             throw new ResourceNotFoundException("Cart", "email", emailId);

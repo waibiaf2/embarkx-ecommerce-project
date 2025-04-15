@@ -32,7 +32,10 @@ public class OrderController {
     }
     
     @PostMapping("/order/users/payments/{paymentMethod}")
-    public ResponseEntity<OrderDTO> orderProducts(@PathVariable String paymentMethod, @RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<OrderDTO> orderProducts(
+        @PathVariable String paymentMethod,
+        @RequestBody OrderRequestDTO orderRequestDTO
+    ) {
         String emailId = authUtil.loggedInEmail();
         System.out.println("orderRequestDTO DATA: " + orderRequestDTO);
         OrderDTO order = orderService.placeOrder(
