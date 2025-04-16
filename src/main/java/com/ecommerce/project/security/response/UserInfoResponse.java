@@ -8,7 +8,7 @@ import java.util.List;
 
 
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 public class UserInfoResponse {
     private Long id;
     @JsonIgnore
