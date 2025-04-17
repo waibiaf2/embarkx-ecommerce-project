@@ -16,9 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(AppConstants.BASE_URL)
 public class AddressController {
-    
     final AuthUtil authUtil;
-    
     final AddressService addressService;
     
     public AddressController(

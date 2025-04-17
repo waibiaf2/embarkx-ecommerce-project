@@ -112,15 +112,14 @@ public class ProductServiceImpl implements ProductService {
         String sortBy,
         String orderBy
     ) {
-        Category category = categoryRepository
-            .findById(categoryId)
-            .orElseThrow(
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "categoryId", categoryId)
             );
         
         Sort sortOrder = orderBy.equalsIgnoreCase("asc") ?
             Sort.by(sortBy).ascending() :
             Sort.by(sortBy).descending();
+
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortOrder);
         Page<Product> productsPage = productRepository.findByCategory(category, pageDetails);
         List<Product> products = productsPage.getContent();

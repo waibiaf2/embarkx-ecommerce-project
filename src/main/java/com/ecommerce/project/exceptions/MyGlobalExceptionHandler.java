@@ -18,6 +18,7 @@ public class MyGlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> myMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         Map<String, String> response = new HashMap<>();
+        ex.getParameter().getParameterName();
         
         ex.getBindingResult().getAllErrors().forEach((err) -> {
             String fieldName = ((FieldError) err).getField();
@@ -31,7 +32,6 @@ public class MyGlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, String>> myConstraintViolationException(ConstraintViolationException ex) {
         Map<String, String> response = new HashMap<>();
-        
         ex.getConstraintViolations().forEach((err) -> {
             String fieldName = err.getPropertyPath().toString();
             String errorMessage = err.getMessage();
@@ -43,15 +43,15 @@ public class MyGlobalExceptionHandler {
     }
     
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<APIResponse> resourceNotFoundException(ResourceNotFoundException e) {
-        String errorMessage = e.getMessage();
+    public ResponseEntity<APIResponse> resourceNotFoundException(ResourceNotFoundException ex) {
+        String errorMessage = ex.getMessage();
         APIResponse apiResponse = new APIResponse(errorMessage,false);
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(APIException.class)
-    public ResponseEntity<APIResponse> apiException(APIException e) {
-        String errorMessage = e.getMessage();
+    public ResponseEntity<APIResponse> apiException(APIException ex) {
+        String errorMessage = ex.getMessage();
         APIResponse apiResponse = new APIResponse(errorMessage,false);
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
