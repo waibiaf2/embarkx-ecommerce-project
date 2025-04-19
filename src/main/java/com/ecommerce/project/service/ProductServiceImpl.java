@@ -112,7 +112,8 @@ public class ProductServiceImpl implements ProductService {
         String sortBy,
         String orderBy
     ) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
+        Category category = categoryRepository.findById(categoryId)
+            .orElseThrow(
                 () -> new ResourceNotFoundException("Category", "categoryId", categoryId)
             );
         
@@ -142,7 +143,13 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
-    public ProductResponse getProductsByKeyWord(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String orderBy) {
+    public ProductResponse getProductsByKeyWord(
+        String keyword,
+        Integer pageNumber,
+        Integer pageSize,
+        String sortBy,
+        String orderBy
+    ) {
         Sort sort = orderBy.equalsIgnoreCase("asc") ?
             Sort.by(sortBy).ascending() :
             Sort.by(sortBy).descending();

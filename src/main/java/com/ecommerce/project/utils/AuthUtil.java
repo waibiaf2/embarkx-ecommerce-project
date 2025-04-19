@@ -37,12 +37,10 @@ public class AuthUtil {
     
     public User loggedInUser() {
         Authentication authentication = getAuthenticationObj();
-        
-        User user = userRepository.findByUserName(authentication.getName()).orElseThrow(
+
+        return userRepository.findByUserName(authentication.getName()).orElseThrow(
             () -> new UsernameNotFoundException("User with username: " + authentication.getName() + "Not Found")
         );
-        
-        return user;
     }
     
     private Authentication getAuthenticationObj() {
