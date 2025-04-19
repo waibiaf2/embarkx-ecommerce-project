@@ -3,6 +3,7 @@ package com.ecommerce.project.controller;
 import com.ecommerce.project.config.AppConstants;
 import com.ecommerce.project.model.User;
 import com.ecommerce.project.payload.AddressDTO;
+import com.ecommerce.project.payload.AddressResponse;
 import com.ecommerce.project.service.AddressService;
 
 import com.ecommerce.project.utils.AuthUtil;
@@ -28,15 +29,22 @@ public class AddressController {
     }
     
     @PostMapping("/addresses")
-    public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {
+    public ResponseEntity<AddressDTO> createAddress(
+        @Valid @RequestBody AddressDTO addressDTO
+    ) {
         User user = authUtil.loggedInUser();
         AddressDTO savedAddressDTO = addressService.createAddress(addressDTO, user);
         return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
     }
     
     @GetMapping("/addresses")
-    public ResponseEntity<List<AddressDTO>> getAddresses() {
-        List<AddressDTO> addressList = addressService.getAddresses();
+    public ResponseEntity<AddressResponse> getAddresses(
+        @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) Integer pageSize,
+        @RequestParam(name = "orderBy", defaultValue = AppConstants.SORT_ORDER_DIRECTION) String orderBy,
+        @RequestParam(name = "sortBy", defaultValue = AppConstants.ADDRESS_SORT_BY) String sortBy
+    ) {
+        AddressResponse addressList = addressService.getAddresses(pageNumber, pageSize,orderBy, sortBy );
         return new ResponseEntity<>(addressList, HttpStatus.OK);
     }
     

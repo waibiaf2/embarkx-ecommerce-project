@@ -4,10 +4,14 @@ import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Address;
 import com.ecommerce.project.model.User;
 import com.ecommerce.project.payload.AddressDTO;
+import com.ecommerce.project.payload.AddressResponse;
 import com.ecommerce.project.repositories.AddressRepository;
 import com.ecommerce.project.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,11 +44,30 @@ public class AddressServiceImpl implements AddressService{
     }
 
     @Override
-    public List<AddressDTO> getAddresses() {
-        List<Address> addresses = addressRepository.findAll();
-        return addresses.stream()
-                .map(address -> modelMapper.map(address, AddressDTO.class))
-                .toList();
+    public AddressResponse getAddresses(
+        Integer pageNumber,
+        Integer pageSize,
+        String orderBy,
+        String sortBy
+    ) {
+        Sort sortOrder = orderBy.equalsIgnoreCase("asc") ?
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize, sortOrder);
+        Page<Address> addressesPage = addressRepository.findAll(pageDetails);
+        List<Address> addresses = addressesPage.getContent();
+
+        List<AddressDTO> addressDTOS = addresses.stream().map(a -> modelMapper.map(a, AddressDTO.class)).toList();
+
+        AddressResponse response = new AddressResponse();
+        response.setContent(addressDTOS);
+        response.setPageNumber(pageDetails.getPageNumber());
+        response.setTotalPages(addressesPage.getTotalPages());
+        response.setTotalElements(addressesPage.getTotalElements());
+        response.setPageSize(pageDetails.getPageSize());
+        response.setLastPage(addressesPage.isLast());
+
+        return response;
     }
 
     @Override
