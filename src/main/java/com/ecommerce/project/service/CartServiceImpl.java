@@ -43,6 +43,7 @@ public class CartServiceImpl implements CartService {
     
     @Override
     public CartDTO addProductToCart(Long productId, Integer quantity) {
+
         Cart cart = createCart();
         
         Product product = productRepository.findById(productId).orElseThrow(
@@ -70,9 +71,7 @@ public class CartServiceImpl implements CartService {
         cartItemToAdd.setDiscount(product.getDiscount());
         cartItemToAdd.setProductPrice(product.getSpecialPrice());
         cartItemToAdd.setCart(cart);
-        
-        
-        
+
         // Save Cart Item
         cartItemRepository.save(cartItemToAdd);
         

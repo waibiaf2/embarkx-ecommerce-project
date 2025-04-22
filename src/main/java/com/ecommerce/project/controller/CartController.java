@@ -15,18 +15,28 @@ import java.util.List;
 @RestController
 @RequestMapping(AppConstants.BASE_URL)
 public class CartController {
-    @Autowired
-    private CartServiceImpl cartService;
-    @Autowired
-    private AuthUtil authUtil;
-    @Autowired
-    private CartRepository cartRepository;
-    
+    private final CartServiceImpl cartService;
+    private final AuthUtil authUtil;
+    private final CartRepository cartRepository;
+
+    public CartController(
+        CartServiceImpl cartService,
+        AuthUtil authUtil,
+        CartRepository cartRepository
+    ) {
+        this.cartService = cartService;
+        this.authUtil = authUtil;
+        this.cartRepository = cartRepository;
+    }
+
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
     public ResponseEntity<CartDTO> addProductToCart(
         @PathVariable(name = "productId") Long productId,
         @PathVariable(name = "quantity") Integer quantity
     ) {
+        if(quantity == null)
+            quantity = 1;
+
         CartDTO cartDTO = cartService.addProductToCart(productId, quantity);
         return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
