@@ -1,5 +1,6 @@
 package com.ecommerce.project.payload;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDTO {
+    @JsonIgnore
     private Long addressId;
     private String street;
     private String buildingName;
     private String city;
     private String state;
     private String country;
-    private String pincode;
+    private String pinCode;
 }
