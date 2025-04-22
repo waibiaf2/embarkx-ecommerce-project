@@ -18,22 +18,22 @@ public class StripeServiceImpl implements StripeService {
     private String stripeApiKey;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         Stripe.apiKey = stripeApiKey;
     }
 
     @Override
     public PaymentIntent paymentIntent(StripePaymentDto stripePaymentDto) throws StripeException {
         PaymentIntentCreateParams params =
-                PaymentIntentCreateParams.builder()
-                        .setAmount(stripePaymentDto.getAmount())
-                        .setCurrency(stripePaymentDto.getCurrency())
-                        .setAutomaticPaymentMethods(
-                                PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
-                                        .setEnabled(true)
-                                        .build()
-                        )
-                        .build();
+            PaymentIntentCreateParams.builder()
+                .setAmount(stripePaymentDto.getAmount())
+                .setCurrency(stripePaymentDto.getCurrency())
+                .setAutomaticPaymentMethods(
+                    PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                        .setEnabled(true)
+                        .build()
+                )
+                .build();
 
         return PaymentIntent.create(params);
     }
