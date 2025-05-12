@@ -5,15 +5,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
+@ToString
+@RequiredArgsConstructor
 @Table(
     name = "users",
     uniqueConstraints = {
@@ -25,23 +26,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
-    
+
     @NotBlank
     @Size(max = 20)
     @Column(name = "username")
     private String userName;
-    
+
     @NotBlank
     @Size(max = 50)
     @Email
     @Column(name = "email")
     private String email;
-    
+
     @NotBlank
     @Size(max = 120)
     @Column(name = "password")
     private String password;
-    
+
     public User(
         String userName,
         String email,
@@ -51,7 +52,7 @@ public class User {
         this.email = email;
         this.password = password;
     }
-    
+
     @ManyToMany(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE},
         fetch = FetchType.EAGER
@@ -62,13 +63,14 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-    
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @ToString.Exclude
 //    @JoinTable(name = "user_address",
 //                joinColumns = @JoinColumn(name = "user_id"),
 //                inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses = new ArrayList<>();
-    
+
     @ToString.Exclude
     @OneToOne(
         mappedBy = "user",
@@ -76,7 +78,7 @@ public class User {
         orphanRemoval = true
     )
     private Cart cart;
-    
+
     @ToString.Exclude
     @OneToMany(
         mappedBy = "user",
@@ -84,4 +86,20 @@ public class User {
         orphanRemoval = true
     )
     private Set<Product> products;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        User user = (User) o;
+        return getUserId() != null && Objects.equals(getUserId(), user.getUserId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
 }
