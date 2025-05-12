@@ -10,39 +10,38 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthUtil {
     private final UserRepository userRepository;
-    
+    private final Authentication authentication
+        = SecurityContextHolder.getContext().getAuthentication();
+
     public AuthUtil(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     public String loggedInEmail() {
-        Authentication authentication = getAuthenticationObj();
-        User user = userRepository.findByUserName(getAuthenticationObj().getName())
-            .orElseThrow(
-                () -> new UsernameNotFoundException("User with username: " + authentication.getName() + "Not Found")
-            );
-        
-        return user.getEmail();
-    }
-    
-    public Long loggedInUserId() {
-        Authentication authentication = getAuthenticationObj();
         User user = userRepository.findByUserName(authentication.getName())
             .orElseThrow(
                 () -> new UsernameNotFoundException("User with username: " + authentication.getName() + "Not Found")
             );
-        
+
+        return user.getEmail();
+    }
+
+    public Long loggedInUserId() {
+        User user = userRepository.findByUserName(authentication.getName())
+            .orElseThrow(
+                () -> new UsernameNotFoundException("User with username: " + authentication.getName() + "Not Found")
+            );
+
         return user.getUserId();
     }
-    
+
     public User loggedInUser() {
-        Authentication authentication = getAuthenticationObj();
 
         return userRepository.findByUserName(authentication.getName()).orElseThrow(
             () -> new UsernameNotFoundException("User with username: " + authentication.getName() + "Not Found")
         );
     }
-    
+
     private Authentication getAuthenticationObj() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
