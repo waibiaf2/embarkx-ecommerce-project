@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(
         UserRepository userRepository,
