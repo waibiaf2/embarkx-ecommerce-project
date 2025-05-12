@@ -178,8 +178,7 @@ public class CartServiceImpl implements CartService {
         
         return getUpdateCartDTO(cartItems, cartDTO);
     }
-    
-    
+
     @Transactional
     @Override
     public String deleteProductFromCart(Long cartId, Long productId) {
