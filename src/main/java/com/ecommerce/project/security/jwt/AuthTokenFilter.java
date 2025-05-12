@@ -21,15 +21,15 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
-    
+
     @Autowired
     private CookieUtils cookieUtils;
-    
+
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-    
+
     @Override
     protected void doFilterInternal(
         HttpServletRequest request,
@@ -37,39 +37,41 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         FilterChain filterChain
     ) throws ServletException, IOException {
         logger.debug("AuthTokenFilter called for URI: {}", request.getRequestURI());
-        
+
         try {
             String jwt = parseJwt(request);
             if (jwt != null && cookieUtils.validateJwtToken(jwt)) {
                 String username = cookieUtils.getUserNameFromJwtToken(jwt);
-                
                 UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(username);
-                
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
                         userDetails.getAuthorities()
                     );
-                
+
                 logger.debug("Roles from JWT: {}", userDetails.getAuthorities());
-                
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-        
+
         filterChain.doFilter(request, response);
     }
-    
+
     private String parseJwt(HttpServletRequest request) {
         //String jwt = jwtUtils.getJwtFromHeader(request);
         String jwt = cookieUtils.getJwtFromCookie(request);
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
+    }
+
+    private String parseCookie(HttpServletRequest request) {
+        String cookie = cookieUtils.getJwtFromCookie(request);
+        logger.debug("AuthCookieFilter.java: {}", cookie);
+        return cookie;
     }
 }
 
