@@ -10,11 +10,8 @@ import org.hibernate.proxy.HibernateProxy;
 import java.util.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
-@RequiredArgsConstructor
 @Table(
     name = "users",
     uniqueConstraints = {

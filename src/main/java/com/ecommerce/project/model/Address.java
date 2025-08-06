@@ -12,7 +12,6 @@ import java.util.Objects;
 @Table(name = "addresses")
 @Getter
 @Setter
-@RequiredArgsConstructor
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
